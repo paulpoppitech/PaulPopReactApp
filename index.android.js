@@ -25,7 +25,7 @@ export default class PaulPopReactApp extends Component {
       return <CarList navigator={navigator} />
     }
     if(route.name == 'editCar') {
-      return <EditCar navigator={navigator} car={route.data}/>
+      return <EditCar navigator={navigator} car={route.data} carIndex={route.carIndex} callback={route.callback}/>
     }
   }
 
