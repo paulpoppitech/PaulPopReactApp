@@ -1,5 +1,7 @@
 'use strict';
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   TextInput,
@@ -10,6 +12,8 @@ import {
 } from 'react-native';
 
 import Button from 'react-native-button';
+
+import * as CarActions from '../actions/car';
 
 class CarList extends Component {
   constructor(){
@@ -34,18 +38,22 @@ class CarList extends Component {
     }
   }
 
-  delete(index) {
-    var carlist = this.state.cars;
-    delete carlist[index];
-    this.setState({cars: carlist});
+  componentWillMount() {
+    this.props.getCars();
+  }
+
+  delete(id) {
+    this.props.deleteCar(id).then((data) => {
+      this.props.getCars();
+    });
   }
 
   saveCar() {
-    var carlist = this.state.cars;
     var newCar = this.state.newCar.split(" ");
-    carlist.push({mark: newCar[0], model: newCar[1]});
-    this.setState({cars: carlist});
-    this.setState({newCar: ''})
+    this.props.addCar(newCar[0], newCar[1]).then((data) => {
+      this.props.getCars();
+      this.setState({newCar: ''})
+    });
   }
 
   navigate(routeName, data, index) {
@@ -57,11 +65,10 @@ class CarList extends Component {
     });
   }
 
-  edit(carMark, carModel, index) {
-    var carlist = this.state.cars;
-    carlist[index].mark = carMark;
-    carlist[index].model = carModel;
-    this.setState({cars: carlist});
+  edit(carMark, carModel, carId) {
+    this.props.editCar(carId, carMark, carModel).then((data) => {
+      this.props.getCars();
+    });
   }
 
   redirect(routeName, accessToken){
@@ -72,17 +79,19 @@ class CarList extends Component {
 
   render() {
 
-    const lapsList = this.state.cars.map((data, index) => {
+    console.log('mda', this.props.car.cars)
+
+    let lapsList = this.props.car.cars.map((data, index) => {
       return (
         <View key={index}>
-          <Button onPress={ this.navigate.bind(this, 'editCar', data, index) }>{data.model + ' ' + data.mark}</Button>
-          <Button onPress={ this.delete.bind(this, index) }>Delete</Button>
+          <Button onPress={ this.navigate.bind(this, 'editCar', data, data._id) }>{data.model + ' ' + data.mark}</Button>
+          <Button onPress={ this.delete.bind(this, data._id) }>Delete</Button>
         </View>
       )
     })
 
 
-    return (
+    return  (
       <View style={styles.container}>
         <TextInput
           style={{width: 150,height: 40, borderColor: 'gray', borderWidth: 1}}
@@ -94,7 +103,13 @@ class CarList extends Component {
         <Text style={styles.heading}>
           Car list:
         </Text>
-        {lapsList}
+        {
+          !this.props.car.carErrors ?
+          lapsList : (
+            <Text style={styles.heading}>
+              {this.props.car.carErrors}
+            </Text>)
+        }
       </View>
     );
   }
@@ -145,4 +160,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CarList
+function mapStateToProps (state) {
+  return {...state};
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    ...CarActions
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CarList);

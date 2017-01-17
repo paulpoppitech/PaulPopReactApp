@@ -1,7 +1,9 @@
 'use strict';
 import React, { Component } from 'react';
 import Button from 'react-native-button';
-import { Pie } from 'react-native-pathjs-charts'
+import { Pie } from 'react-native-pathjs-charts';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   TextInput,
@@ -12,14 +14,26 @@ import {
   BackAndroid
 } from 'react-native';
 
+import * as CarActions from '../actions/car';
+
 class EditCar extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      carModel: props.car.model,
-      carMark: props.car.mark
+      carId: props.carIndex,
+      carMark: null,
+      carModel: null,
     }
+  }
+
+  componentWillMount() {
+    this.props.getCar(this.state.carId)
+      .then((data) => {
+        console.log('then',data)
+        this.setState({carModel: data.payload.data.model, carMark: data.payload.data.mark})
+        }
+      );
   }
 
   navigate(routeName) {
@@ -29,11 +43,12 @@ class EditCar extends Component {
   }
 
   edit() {
-    this.props.callback(this.state.carMark, this.state.carModel, this.props.carIndex);
+    this.props.callback(this.state.carMark, this.state.carModel, this.state.carId);
     this.props.navigator.pop();
   }
 
   render() {
+    console.log(this.state, 'tessssst');
 
     var sampleData = {
       pie: {
@@ -142,4 +157,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export default EditCar
+function mapStateToProps (state) {
+  return {...state};
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    ...CarActions
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditCar);

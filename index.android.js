@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -10,9 +11,11 @@ import {
 } from 'react-native';
 import Button from 'react-native-button';
 
-import CarList from './CarList';
-import EditCar from './EditCar';
-import Root from './root';
+import CarList from './src/components/CarList';
+import EditCar from './src/components/EditCar';
+import Root from './src/components/root';
+
+import store from './store';
 
 export default class PaulPopReactApp extends Component {
 
@@ -31,12 +34,14 @@ export default class PaulPopReactApp extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Navigator
-          initialRoute={{name: 'root'}}
-          renderScene={this.renderScene.bind(this)}
-        />
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <Navigator
+            initialRoute={{name: 'root'}}
+            renderScene={this.renderScene.bind(this)}
+          />
+        </View>
+      </Provider>
     );
   }
 }
