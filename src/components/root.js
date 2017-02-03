@@ -59,7 +59,7 @@ class Root extends Component {
           Press Me!
         </Button>
 
-        <TouchableHighlight onPress={ this.navigate.bind(this, 'carlist') } style={styles.button}>
+        <TouchableHighlight onPress={ this.navigate.bind(this, 'notelist') } style={styles.button}>
           <Text style={styles.buttonText}>Car List</Text>
         </TouchableHighlight>
       </View>

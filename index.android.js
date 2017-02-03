@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import Button from 'react-native-button';
 
-import CarList from './src/components/CarList';
-import EditCar from './src/components/EditCar';
+import NoteList from './src/components/GoodList';
+import NoteDelete from './src/components/NoteDelete';
 import Login from './src/components/Login';
 import Root from './src/components/root';
 
@@ -21,18 +21,18 @@ import store from './store';
 export default class PaulPopReactApp extends Component {
 
   renderScene(route, navigator) {
-    console.log(route);
     if(route.name == 'root') {
       return <Root navigator={navigator} />
     }
-    if(route.name == 'carlist') {
-      return <CarList navigator={navigator} />
+    if(route.name == 'goodList') {
+      return <GoodList navigator={navigator} />
     }
     if(route.name == 'login') {
       return <Login navigator={navigator} />
     }
-    if(route.name == 'editCar') {
-      return <EditCar navigator={navigator} car={route.data} carIndex={route.carIndex} callback={route.callback}/>
+    if(route.name == 'notedelete') {
+      console.log(route, 'route');
+      return <NoteDelete navigator={navigator} data={route.data} />
     }
   }
 
@@ -41,7 +41,7 @@ export default class PaulPopReactApp extends Component {
       <Provider store={store}>
         <View style={styles.container}>
           <Navigator
-            initialRoute={{name: 'login'}}
+            initialRoute={{name: 'notelist'}}
             renderScene={this.renderScene.bind(this)}
           />
         </View>

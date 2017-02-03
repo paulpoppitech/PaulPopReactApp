@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import car from './car';
+import good from './good';
 import user from './user';
 
 export default combineReducers({
-  car,
+  good,
   user
 });
