@@ -14,15 +14,16 @@ import {
   BackAndroid
 } from 'react-native';
 
-import * as NoteActions from '../actions/note';
+import * as GoodActions from '../actions/good';
 
-class NoteDelete extends Component {
+class SellGood extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props, 'props')
     this.state = {
-      note: props.data,
+      name: null,
+      quantity: null,
+      price: null,
       isError: null
     }
   }
@@ -33,28 +34,45 @@ class NoteDelete extends Component {
     });
   }
 
-  delete() {
-    this.props.deleteNote(this.state.note.id).then((data) => {
-      if (data.type == 'note/DELETE_SUCCESS') {
-        this.props.navigator.push({
-          name: 'notelist'
-        });
-      }
-    }, (error) => {
-      this.setState({isError: error})
-    });
+  sell() {
+    this.props.sellGood(this.state.name, this.state.quantity, this.state.price);
+  }
+
+  componentWillReceiveProps(np) {
+    if (np.good.sellSuccess) {
+      this.props.setSell();
+      this.props.getGoods(null);
+      this.props.navigator.pop();
+
+    }
   }
 
   render() {
-    console.log(this.state, 'state');
 
     return (
       <View style={styles.container}>
-        <Text>{this.state.note.text}</Text>
         {
-          this.state.isError ? <Text>{this.state.isError}</Text> : null
+          this.props.good.goodErrors ? <Text style={styles.error}>{this.props.good.goodErrors}</Text> : null
         }
-        <Button onPress={ this.delete.bind(this) }>Delete</Button>
+        <Text>{'name'}</Text>
+        <TextInput
+          style={{width: 150,height: 40, borderColor: 'gray', borderWidth: 1}}
+          onChangeText={(text) => this.setState({name: text})}
+          value={this.state.name}
+        />
+        <Text>{'quantity'}</Text>
+        <TextInput
+          style={{width: 150,height: 40, borderColor: 'gray', borderWidth: 1}}
+          onChangeText={(text) => this.setState({quantity: text})}
+          value={this.state.quantity}
+        />
+        <Text>{'price'}</Text>
+        <TextInput
+          style={{width: 150,height: 40, borderColor: 'gray', borderWidth: 1}}
+          onChangeText={(text) => this.setState({price: text})}
+          value={this.state.price}
+        />
+        <Button onPress={ this.sell.bind(this) }>sell</Button>
 
       </View>
     );
@@ -112,8 +130,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    ...NoteActions
+    ...GoodActions
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoteDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(SellGood);

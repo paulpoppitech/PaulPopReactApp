@@ -9,76 +9,51 @@ import {
   TextInput,
   TouchableHighlight,
   Text,
-  View
+  View,
+  BackAndroid
 } from 'react-native';
 
 import Button from 'react-native-button';
 
 import * as GoodActions from '../actions/good';
 
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
 class GoodList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      nrRow: 1,
-      dataSource: ds.cloneWithRows([]),
-      notes: [],
       isLoading: false,
-      canLoadMore: true,
-      isConnected: null,
+      lastValue: null
 
     };
-
-    this.getUpdatedDataSource = this.getUpdatedDataSource.bind(this);
   }
 
   componentWillMount() {
-    console.log(this.state.nrRow)
-    this.props.getNotes(this.state.nrRow).then((data) => {
-      if (data.type == 'note/GET_ALL_SUCCESS') {
-        this.setState({
-          dataSource: ds.cloneWithRows(data.payload.data.notes),
-          notes: data.payload.data.notes,
-          canLoadMore: data.payload.data.more
-        });
-      }
-    });
+    this.props.getGoods(this.state.lastValue);
   }
 
-  getUpdatedDataSource() {
-    if (this.state.canLoadMore) {
-      this.props.getNotes(this.state.nrRow + 1).then((data) => {
-        if (data.type == 'note/GET_ALL_SUCCESS') {
-          let newArray = this.state.notes.concat(data.payload.data.notes);
-          this.setState({
-            dataSource: ds.cloneWithRows(newArray),
-            notes: newArray,
-            nrRow: this.state.nrRow + 1,
-            canLoadMore: data.payload.data.more,
-            isLoading: false,
-          });
-        }
-
-      });
+  componentWillReceiveProps(np) {
+    if (np.good.buySuccess == true && this.props.good.buySuccess == null) {
+      this.props.getGoods(this.state.lastValue);
     }
+    if (np.good.sellSuccess == true && this.props.good.sellSuccess == null) {
+      this.props.getGoods(this.state.lastValue);
+    }
+  }
+
+  componentDidMount(){
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      if (this.props.navigator && this.props.navigator.getCurrentRoutes().length > 1) {
+        this.props.navigator.pop();
+        return true;
+      }
+      return false;
+    });
   }
 
   navigate(routeName, data) {
     this.props.navigator.push({
       name: routeName,
       data: data
-    });
-  }
-
-  retry() {
-    this.setState({
-      dataSource: ds.cloneWithRows([]),
-      notes: [],
-      nrRow: 1,
-      canLoadMore: true,
-      isLoading: false,
     });
   }
 
@@ -89,18 +64,29 @@ class GoodList extends Component {
   }
 
   render() {
+    let lapsList = this.props.good.goods.map((data, index) => {
+      return (
+        <View key={index}>
+          <Button onPress={ this.navigate.bind(this, 'editGood', data) }>{data.name + ' q:' + data.quantity + ' ' + data.price + '$'}</Button>
+        </View>
+      )
+    })
+
     return  (
       <View style={styles.container}>
-        <Text>{this.state.isConnected ? 'Online' : 'Offline'}</Text>
-        <Button onPress={ this.retry.bind(this) }>Retry</Button>
-        <ListView
-          renderScrollComponent={props => <InfiniteScrollView {...props} />}
-          dataSource={this.state.dataSource}
-          renderRow={(data) => <View><Button onPress={ this.navigate.bind(this, 'notedelete', data) }>{data.text}</Button></View>}
-          canLoadMore={this.state.canLoadMore}
-          onLoadMore={this.getUpdatedDataSource()}
-        />
-        </View>
+        <Text style={styles.heading}>
+          goods list:
+        </Text>
+        {
+          !this.props.good.goodErrors ?
+            lapsList : (
+            <Text style={styles.heading}>
+              {this.props.good.goodErrors}
+            </Text>)
+        }
+
+        <Button onPress={ this.navigate.bind(this, 'sellGood') }>Sell good</Button>
+      </View>
     );
   }
 }
