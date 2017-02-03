@@ -90,6 +90,7 @@ class GoodList extends Component {
     }) : null
 
     return  (
+      !this.props.good.isLoading ?
       <View style={styles.container}>
         <Text style={styles.heading}>
           goods list:
@@ -124,7 +125,7 @@ class GoodList extends Component {
         }
 
         <Button onPress={ this.navigate.bind(this, 'sellGood') }>Sell good</Button>
-      </View>
+      </View> : <Text style={styles.heading}>Loading...</Text>
     );
   }
 }
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   heading: {
-    fontSize: 30,
+    fontSize: 15,
   },
   error: {
     color: 'red',

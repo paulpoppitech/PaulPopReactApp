@@ -44,6 +44,7 @@ class EditGood extends Component {
       this.props.setBuy();
       this.props.navigator.pop();
     }
+
   }
 
   render() {
@@ -54,6 +55,9 @@ class EditGood extends Component {
           this.props.good.goodErrors ? <Text style={styles.error}>{this.props.good.goodErrors}</Text> : null
         }
         <Text>{this.state.good.name}</Text>
+        <Text>{'q:' + this.state.good.quantity}</Text>
+        <Text>{this.state.good.name + '$'}</Text>
+        <Text>{'Buy details:'}</Text>
         <Text>{'quantity'}</Text>
         <TextInput
           style={{width: 150,height: 40, borderColor: 'gray', borderWidth: 1}}

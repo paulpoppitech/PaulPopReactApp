@@ -6,6 +6,7 @@ const defaultState = {
   buySuccess: null,
   sellGoods: [],
   sellSuccess: null,
+  isLoading: false
 };
 
 export default function reducer (state = defaultState, action) {
@@ -15,6 +16,7 @@ export default function reducer (state = defaultState, action) {
       state = {
         ...state,
         goodErrors: null,
+        isLoading: true,
       };
       break;
     }
@@ -24,13 +26,15 @@ export default function reducer (state = defaultState, action) {
         ...state,
         goods: action.payload.data,
         goodErrors: null,
+        isLoading: false,
       };
       break;
     }
     case 'good/GET_ALL_FAIL': {
       state = {
         ...state,
-        goodErrors: action.error.response.data.text
+        goodErrors: action.error.response.data.text,
+        isLoading: false,
       };
       break;
     }
