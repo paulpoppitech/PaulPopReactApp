@@ -48,6 +48,7 @@ class GoodList extends Component {
       }
       return false;
     });
+
   }
 
   navigate(routeName, data) {
@@ -64,13 +65,29 @@ class GoodList extends Component {
   }
 
   render() {
-    let lapsList = this.props.good.goods.map((data, index) => {
+    let lapsList = this.props.good.goods ? this.props.good.goods.map((data, index) => {
       return (
         <View key={index}>
           <Button onPress={ this.navigate.bind(this, 'editGood', data) }>{data.name + ' q:' + data.quantity + ' ' + data.price + '$'}</Button>
         </View>
       )
-    })
+    }) : null
+
+    let buyList = this.props.good.buyGoods ? this.props.good.buyGoods.map((data, index) => {
+      return (
+        <View key={index}>
+          <Text>{data.name + ' q:' + data.quantity + ' ' + data.price + '$'}</Text>
+        </View>
+      )
+    }) : null
+
+    let sellList = this.props.good.sellGoods ? this.props.good.sellGoods.map((data, index) => {
+      return (
+        <View key={index}>
+          <Text>{data.name + ' q:' + data.quantity + ' ' + data.price + '$'}</Text>
+        </View>
+      )
+    }) : null
 
     return  (
       <View style={styles.container}>
@@ -80,6 +97,27 @@ class GoodList extends Component {
         {
           !this.props.good.goodErrors ?
             lapsList : (
+            <Text style={styles.heading}>
+              {this.props.good.goodErrors}
+            </Text>)
+        }
+        <Text style={styles.heading}>
+          buy list:
+        </Text>
+        {
+          !this.props.good.goodErrors ?
+            buyList : (
+            <Text style={styles.heading}>
+              {this.props.good.goodErrors}
+            </Text>)
+        }
+
+        <Text style={styles.heading}>
+          sell list:
+        </Text>
+        {
+          !this.props.good.goodErrors ?
+            sellList : (
             <Text style={styles.heading}>
               {this.props.good.goodErrors}
             </Text>)

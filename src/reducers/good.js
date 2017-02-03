@@ -10,11 +10,20 @@ const defaultState = {
 
 export default function reducer (state = defaultState, action) {
   switch (action.type) {
+    case 'good/GET_ALL': {
+      // console.log('adadadad',action.payload.data)
+      state = {
+        ...state,
+        goodErrors: null,
+      };
+      break;
+    }
     case 'good/GET_ALL_SUCCESS': {
       // console.log('adadadad',action.payload.data)
       state = {
         ...state,
         goods: action.payload.data,
+        goodErrors: null,
       };
       break;
     }
@@ -26,17 +35,18 @@ export default function reducer (state = defaultState, action) {
       break;
     }
     case 'good/BUY': {
-      // state = {
-      //   ...state,
-      //   goods: action.payload.data,
-      // };
+      state = {
+        ...state,
+        goodErrors: null,
+      };
       break;
     }
     case 'good/BUY_SUCCESS': {
       state = {
         ...state,
         buyGoods: state.buyGoods.concat(action.payload.data),
-        buySuccess: true
+        buySuccess: true,
+        goodErrors: null,
       };
       break;
     }
@@ -50,22 +60,25 @@ export default function reducer (state = defaultState, action) {
     case 'good/SET_BUY': {
       state = {
         ...state,
-        buySuccess: null
+        buySuccess: null,
       };
       break;
     }
     case 'good/SELL': {
-      // state = {
-      //   ...state,
-      //   goods: action.payload.data,
-      // };
+      state = {
+        ...state,
+        goods: action.payload.data,
+        goodErrors: null,
+      };
       break;
     }
     case 'good/SELL_SUCCESS': {
+      console.log(action.payload)
       state = {
         ...state,
         sellGoods: state.sellGoods.concat(action.payload.data),
-        sellSuccess: true
+        sellSuccess: true,
+        goodErrors: null,
       };
       break;
     }
