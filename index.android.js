@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -10,33 +11,44 @@ import {
 } from 'react-native';
 import Button from 'react-native-button';
 
-import CarList from './CarList';
-import EditCar from './EditCar';
-import Root from './root';
+import GoodList from './src/components/GoodList';
+import EditGood from './src/components/EditGood';
+import SellGood from './src/components/SellGood';
+import Login from './src/components/Login';
+import Root from './src/components/root';
+
+import store from './store';
 
 export default class PaulPopReactApp extends Component {
 
   renderScene(route, navigator) {
-    console.log(route);
     if(route.name == 'root') {
       return <Root navigator={navigator} />
     }
-    if(route.name == 'carlist') {
-      return <CarList navigator={navigator} />
+    if(route.name == 'goodList') {
+      return <GoodList navigator={navigator} />
     }
-    if(route.name == 'editCar') {
-      return <EditCar navigator={navigator} car={route.data} carIndex={route.carIndex} callback={route.callback}/>
+    if(route.name == 'login') {
+      return <Login navigator={navigator} />
+    }
+    if(route.name == 'editGood') {
+      return <EditGood navigator={navigator} data={route.data} />
+    }
+    if(route.name == 'sellGood') {
+      return <SellGood navigator={navigator} />
     }
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Navigator
-          initialRoute={{name: 'root'}}
-          renderScene={this.renderScene.bind(this)}
-        />
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <Navigator
+            initialRoute={{name: 'goodList'}}
+            renderScene={this.renderScene.bind(this)}
+          />
+        </View>
+      </Provider>
     );
   }
 }
